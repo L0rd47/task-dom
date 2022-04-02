@@ -4,7 +4,13 @@
   Необходимо, чтобы функция осуществила вставку на страницу указанный тег с указанным содержимым указанное число раз.
   Считаем, что всегда передается тег, допускающий вставку текста в качестве своего содержимого (P, DIV, I и пр.).
 */
+
 export function appendToBody(tag, content, count) {
+    for (let i = 0; i < count; i++) {
+        let item = document.createElement(tag);
+        item.innerHTML = content;
+        document.body.appendChild(item);
+    }
 }
 
 /*
@@ -15,6 +21,18 @@ export function appendToBody(tag, content, count) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function generateTree(childrenCount, level) {
+    document.body.insertAdjacentHTML('beforeend', '<div class="item_1"></div>');
+    for (let i = 0; i < level - 1; i++) {
+        let div = document.getElementsByClassName(`item_${i + 1}`);
+        for (let elem of div)
+            for (let j = 0; j < childrenCount; j++)
+                elem.insertAdjacentHTML(
+                    'beforeend',
+                    `<div class="item_${i + 2}"></div>`,
+                );
+    }
+
+    return document.body.firstChild;
 }
 
 /*
@@ -26,4 +44,34 @@ export function generateTree(childrenCount, level) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function replaceNodes() {
+    let tree = generateTree(2, 3);
+    [...tree.querySelectorAll('.item_2')].forEach((el) => {
+        const new_tag = document.createElement('section');
+        new_tag.classList.add(el.className);
+        new_tag.innerHTML = el.innerHTML;
+        el.parentNode.replaceChild(new_tag, el);
+    });
+    return tree;
 }
+
+//                     .............                .""".             .""".
+//             ..."""""             """""...       $   . ".         ." .   $
+//         ..""        .   .   .   .   .    ..    $   $$$. ". ... ." .$$$   $
+//       ."    . " . " . " . " . " . " . " .  "" ."  $$$"""  "   "  """$$$  ".
+//     ."      . " . " . " . " . " . " . " .     $  "                    "   $
+//    ."   . " . " . "           "   " . " . "  ."      ...          ...     ".
+//   ."    . " . "    .."""""""""...     " . "  $     .$"              "$.    $
+//  ."     . " . " .""     .   .    ""..   . " $ ".      .""$     .""$      ." $
+// ."    " . " .       . " . " . " .    $    " $ "      "  $$    "  $$       " $
+// $     " . " . " . " . " . " . " . "   $     $             $$.$$             $
+// $     " . " . " . " . " . " . " . " .  $  " $  " .        $$$$$        . "  $
+// $     " . " . " . " . " . " . " . " .  $    $      "  ..   "$"   ..  "      $
+// ".    " . " . " . " . " . " . " . "   ."  "  $  . . . $  . .". .  $ . . .  $
+//  $    " . " . " . " . " . " . " . "  ."   "            ".."   ".."
+//   $     . " . " . " . " . " . "   .."   . " . "..    "             "    .."
+//   ".      " . " . " . " . " .  .""    " . " .    """$...         ...$"""
+//    ". "..     " . " . " . " .  "........  "    .....  ."""....."""
+//      ". ."$".....                       $..."$"$"."   $".$"... `":....
+//        "".."    $"$"$"$"""$........$"$"$"  ."."."  ...""      ."".    `"".
+//            """.$.$." ."  ."."."    ."."." $.$.$"""".......  ". ". $ ". ". $
+//                   """.$.$.$.$.....$.$.""""               ""..$..$."..$..$."
